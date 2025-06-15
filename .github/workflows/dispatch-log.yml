@@ -31,18 +31,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create logs directory
+      - name: Create logs folder
         run: mkdir -p logs
 
-      - name: Create log file
+      - name: Write Markdown log
         run: |
           cat <<EOF > logs/${{ github.event.inputs.date }}_${{ github.event.inputs.pid }}.md
           # RA Session Log
 
-          **Date/Time**: ${{ github.event.inputs.date }} at ${{ github.event.inputs.time }}
-          **Participant ID**: ${{ github.event.inputs.pid }}
-          **RA Name**: ${{ github.event.inputs.ra }}
-          **Task Order**: ${{ github.event.inputs.tasks }}
+          **Date/Time**: ${{ github.event.inputs.date }} at ${{ github.event.inputs.time }}  
+          **Participant ID**: ${{ github.event.inputs.pid }}  
+          **RA Name**: ${{ github.event.inputs.ra }}  
+          **Task Order**: ${{ github.event.inputs.tasks }}  
           **Bonus**: ${{ github.event.inputs.bonus || 'N/A' }}
 
           ---
@@ -51,7 +51,7 @@ jobs:
           ${{ github.event.inputs.notes || '_No notes provided._' }}
           EOF
 
-      - name: Commit log
+      - name: Commit log file
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "📝 Add log for ${{ github.event.inputs.pid }} on ${{ github.event.inputs.date }}"
+          commit_message: "📝 Log for ${{ github.event.inputs.pid }} on ${{ github.event.inputs.date }}"
