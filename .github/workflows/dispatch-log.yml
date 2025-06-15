@@ -29,13 +29,12 @@ jobs:
   commit-log:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Create logs directory if not exists
+      - name: Create logs directory
         run: mkdir -p logs
 
-      - name: Write log to file
+      - name: Create log file
         run: |
           cat <<EOF > logs/${{ github.event.inputs.date }}_${{ github.event.inputs.pid }}.md
           # RA Session Log
@@ -48,12 +47,11 @@ jobs:
 
           ---
 
-          ### Notes
+          ### Notes  
           ${{ github.event.inputs.notes || '_No notes provided._' }}
           EOF
 
-      - name: Commit and push
+      - name: Commit log
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "📝 Add log for ${{ github.event.inputs.pid }} on ${{ github.event.inputs.date }}"
-          branch: main
