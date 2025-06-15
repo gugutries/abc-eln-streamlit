@@ -1,0 +1,59 @@
+name: Add Log from Streamlit
+
+on:
+  workflow_dispatch:
+    inputs:
+      pid:
+        description: 'Participant ID'
+        required: true
+      date:
+        description: 'Date (YYYY-MM-DD)'
+        required: true
+      time:
+        description: 'Time (HH:MM)'
+        required: true
+      ra:
+        description: 'RA Name'
+        required: true
+      tasks:
+        description: 'Task Order'
+        required: true
+      bonus:
+        description: 'Bonus'
+        required: false
+      notes:
+        description: 'Notes'
+        required: false
+
+jobs:
+  commit-log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Create logs directory if not exists
+        run: mkdir -p logs
+
+      - name: Write log to file
+        run: |
+          cat <<EOF > logs/${{ github.event.inputs.date }}_${{ github.event.inputs.pid }}.md
+          # RA Session Log
+
+          **Date/Time**: ${{ github.event.inputs.date }} at ${{ github.event.inputs.time }}
+          **Participant ID**: ${{ github.event.inputs.pid }}
+          **RA Name**: ${{ github.event.inputs.ra }}
+          **Task Order**: ${{ github.event.inputs.tasks }}
+          **Bonus**: ${{ github.event.inputs.bonus || 'N/A' }}
+
+          ---
+
+          ### Notes
+          ${{ github.event.inputs.notes || '_No notes provided._' }}
+          EOF
+
+      - name: Commit and push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "📝 Add log for ${{ github.event.inputs.pid }} on ${{ github.event.inputs.date }}"
+          branch: main
